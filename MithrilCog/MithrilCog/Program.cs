@@ -78,6 +78,17 @@ namespace MithrilCog
             }
         }
 
+        public void SetVariable(string name, Vector4 x)
+        {
+            if (ProgramId > 0)
+            {
+                GLStates.UseProgram(ProgramId);
+                int location = GetUniformLocation(name);
+                if (location != -1)
+                    GL.Uniform4(location, x);
+            }
+        }
+
         public int GetUniformLocation(string name)
         {
             if (variables.ContainsKey(name))

@@ -21,6 +21,7 @@ namespace MithrilCog
         public float uTile { private set; get; }
         public float vTile { private set; get; }
         public int Stride { private set; get; }
+        public Vector4 Background { private set; get; }
 
         public TiledTexture(string filename, int tileWidth, int tileHeight)
         {
@@ -52,11 +53,14 @@ namespace MithrilCog
             int r = rgbValues[0];
             int b = rgbValues[1];
             int g = rgbValues[2];
-            for (int i = 0; i < rgbValues.Length; i += 4)
-            {
-                if (rgbValues[i] == r && rgbValues[i + 1] == b && rgbValues[i + 2] == g)
-                    rgbValues[i + 3] = 0;
-            }
+
+            Background = new Vector4(rgbValues[0]/255f, rgbValues[1]/255f, rgbValues[2]/255f, rgbValues[3]/255f);
+
+            //for (int i = 0; i < rgbValues.Length; i += 4)
+            //{
+            //    if (rgbValues[i] == r && rgbValues[i + 1] == b && rgbValues[i + 2] == g)
+            //        rgbValues[i + 3] = 0;
+            //}
 
             System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, bytes);
 

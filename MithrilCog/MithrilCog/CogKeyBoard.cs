@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using OpenTK.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,11 +20,11 @@ namespace MithrilCog
             gameWindow.KeyDown += gameWindow_KeyDown;
         }
 
-        private void gameWindow_KeyDown(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
+        private void gameWindow_KeyDown(object sender, KeyboardKeyEventArgs e)
         {
-            if (e.Key == OpenTK.Input.Key.NumLock) numLock = !numLock;
-            else if (e.Key == OpenTK.Input.Key.CapsLock) capsLock = !capsLock;
-            else if (e.Key == OpenTK.Input.Key.ScrollLock) scrollLock = !scrollLock;
+            if (e.Key == Key.NumLock) numLock = !numLock;
+            else if (e.Key == Key.CapsLock) capsLock = !capsLock;
+            else if (e.Key == Key.ScrollLock) scrollLock = !scrollLock;
             KeyPress newKeyPress = new KeyPress(e.Key, e.Alt, e.Shift, e.Control, e.IsRepeat, numLock, capsLock, scrollLock);
             if (keyPress != newKeyPress) keyPress = newKeyPress;
         }

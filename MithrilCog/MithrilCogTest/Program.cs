@@ -22,8 +22,10 @@ namespace MithrilCogTest
 
             window.UpdateFrame += Window_UpdateFrame;
 
-            grid = new TileGrid(new TiledTexture("ascii_8x8.png", 8, 8), 100, 75, 1f, 1f);
+            grid = new TileGrid(new TiledTexture("ascii_8x8.png", 8, 8), 0, 0, 100, 75, 1f, 1f);
             window.DrawElements.Add(grid);
+
+            grid.ClearTiles(0, new OpenTK.Vector4(1f, 1f, 1f, 1f), new OpenTK.Vector4(0f, 0f, 0f, 1f));
 
             window.Run(30d, 30d);
         }
@@ -45,7 +47,7 @@ namespace MithrilCogTest
                     window.Close();
             }
 
-            grid.ClearTiles(0);
+            grid.ClearTiles(0, new OpenTK.Vector4(1f, 1f, 1f, 1f), new OpenTK.Vector4(0f, 0f, 0f, 1f));
             grid.SetTile(x, y, 2);
 
         }
