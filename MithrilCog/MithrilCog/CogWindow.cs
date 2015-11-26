@@ -12,45 +12,50 @@ namespace MithrilCog
 {
     public class CogWindow : GameWindow
     {
-        private List<IDrawElement> drawElements = new List<IDrawElement>();
+        private SortedSet<IDrawElement> drawElements;
+
         public CogKeyboard CogKeyboard { private set; get; }
 
         public CogWindow() : base()
-        { }
+        { Initialize(); }
 
         public CogWindow(int width, int height) : 
             base(width, height)
-        { }
+        { Initialize(); }
 
         public CogWindow(int width, int height, GraphicsMode mode) : 
             base(width, height, mode)
-        { }
+        { Initialize(); }
 
         public CogWindow(int width, int height, GraphicsMode mode, string title) : 
             base(width, height, mode, title)
-        { }
+        { Initialize(); }
 
         public CogWindow(int width, int height, GraphicsMode mode, string title, GameWindowFlags options) : 
             base(width, height, mode, title, options)
-        { }
+        { Initialize(); }
 
         public CogWindow(int width, int height, GraphicsMode mode, string title, GameWindowFlags options, DisplayDevice device) : 
             base(width, height, mode, title, options, device)
-        { }
+        { Initialize(); }
 
         public CogWindow(int width, int height, GraphicsMode mode, string title, GameWindowFlags options, DisplayDevice device, int major, int minor, GraphicsContextFlags flags) :
             base(width, height, mode, title, options, device, major, minor, flags)
-        { }
+        { Initialize(); }
 
         public CogWindow(int width, int height, GraphicsMode mode, string title, GameWindowFlags options, DisplayDevice device, int major, int minor, GraphicsContextFlags flags, IGraphicsContext sharedContext) :
             base(width, height, mode, title, options, device, major, minor, flags, sharedContext)
-        { }
+        { Initialize(); }
+
+        protected void Initialize()
+        {
+            CogKeyboard = new CogKeyboard(this);
+            drawElements = new SortedSet<IDrawElement>(new DrawElementComparer());
+        }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
-            CogKeyboard = new CogKeyboard(this);
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -66,7 +71,7 @@ namespace MithrilCog
             Projection.Set(Width, Height);
         }
 
-        public IList<IDrawElement> DrawElements
+        public ICollection<IDrawElement> DrawElements
         {
             get
             {

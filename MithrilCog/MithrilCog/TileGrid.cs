@@ -14,13 +14,14 @@ namespace MithrilCog
 
         public int X { private set; get; }
         public int Y { private set; get; }
+        public int Z { private set; get; }
         public int Width { private set; get; }
         public int Height { private set; get; }
         public Vector2 Scale { private set; get; }
         public bool BackColor { private set; get; }
         private int drawCount;
 
-        private bool tileUpdated;
+        private bool updated;
         private int tileBO;
         private ushort[] tiles;
         private Vector4[] colors;
@@ -30,10 +31,7 @@ namespace MithrilCog
         private Program program;
 
 
-        public TileGrid(TiledTexture tiledTexture, int x, int y, int width, int height, bool backColor) : this(tiledTexture, x, y, width, height, 1f, 1f, backColor)
-        { }
-
-        public TileGrid(TiledTexture tiledTexture, int x, int y, int width, int height, float scaleX, float scaleY, bool backColor)
+        public TileGrid(TiledTexture tiledTexture, int x, int y, int z, int width, int height, float scaleX, float scaleY, bool backColor)
         {
             Width = width;
             Height = height;
@@ -43,6 +41,7 @@ namespace MithrilCog
             BackColor = backColor;
             X = x;
             Y = y;
+            Z = z;
 
             //Shader
             program = new Program();
@@ -57,8 +56,7 @@ namespace MithrilCog
                 uniform mat4 projection;
                 uniform vec2 offset;
                 uniform float grid_width;
-                uniform float tile_width;
-                uniform float tile_height;
+                uniform vec2 tile_size;
                 uniform mat2 uvTile;
                 {0}
 
@@ -71,10 +69,10 @@ namespace MithrilCog
 
                     gl_Position = projection * 
 
-                    mat4(vec4(tile_width, 0.0, 0.0, 0.0),
-                         vec4(0.0, tile_height, 0.0, 0.0),
+                    mat4(vec4(tile_size.x, 0.0, 0.0, 0.0),
+                         vec4(0.0, tile_size.y, 0.0, 0.0),
                          vec4(0.0, 0.0, 1.0, 0.0),
-                         vec4((gl_InstanceID - (grid_width * a)) * tile_width, a * tile_height, 0.0, 1.0)) *
+                         vec4((gl_InstanceID - (grid_width * a)) * tile_size.x, a * tile_size.y, 0.0, 1.0)) *
 
                     vec4(vertex_position + offset, 0.0, 1.0);
 
@@ -116,8 +114,7 @@ namespace MithrilCog
 
             program.SetVariable("grid_width", (float)width);
             program.SetVariable("offset", new Vector2(X, Y));
-            program.SetVariable("tile_width", (float)tiledTexture.TileWidth * Scale.X);
-            program.SetVariable("tile_height", (float)tiledTexture.TileWidth * Scale.Y);
+            program.SetVariable("tile_size", tiledTexture.TileSize * Scale);
             program.SetVariable("uvTile", new Matrix2(tiledTexture.uTile, 0, 0, tiledTexture.vTile));
             program.SetVariable("projection", Projection.Matrix);
             program.SetVariable("tex_sampler", 0);
@@ -146,10 +143,10 @@ namespace MithrilCog
 
         public void Draw()
         {
-            if (tileUpdated)
+            if (updated)
             {
-                UpdateTileBuffer();
-                tileUpdated = false;
+                UpdateBuffer();
+                updated = false;
             }
 
             GLStates.ActiveTexture(TextureUnit.Texture0);
@@ -194,7 +191,7 @@ namespace MithrilCog
 
         }
 
-        private void UpdateTileBuffer()
+        private void UpdateBuffer()
         {
             if (BackColor)
             {
@@ -250,7 +247,7 @@ namespace MithrilCog
                 colors[i] = color;
                 backColors[i] = backColor;
             }
-            tileUpdated = true;
+            updated = true;
         }
 
         public void ClearTiles(ushort tile, Vector4 color)
@@ -260,7 +257,7 @@ namespace MithrilCog
                 tiles[i] = tile;
                 colors[i] = color;
             }
-            tileUpdated = true;
+            updated = true;
         }
 
         public void SetColor(int x, int y, Vector4 color)
@@ -271,7 +268,7 @@ namespace MithrilCog
                 if (colors[index] != color)
                 {
                     colors[index] = color;
-                    tileUpdated = true;
+                    updated = true;
                 }
             }
         }
@@ -284,7 +281,7 @@ namespace MithrilCog
                 if (backColors[index] != backColor)
                 {
                     backColors[index] = backColor;
-                    tileUpdated = true;
+                    updated = true;
                 }
             }
         }
@@ -297,7 +294,7 @@ namespace MithrilCog
                 if (tiles[index] != tile)
                 {
                     tiles[index] = tile;
-                    tileUpdated = true;
+                    updated = true;
                 }
             }
         }
@@ -310,17 +307,17 @@ namespace MithrilCog
                 if (tiles[index] != tile)
                 {
                     tiles[index] = tile;
-                    tileUpdated = true;
+                    updated = true;
                 }
                 if (colors[index] != color)
                 {
                     colors[index] = color;
-                    tileUpdated = true;
+                    updated = true;
                 }
                 if (BackColor && backColors[index] != backColor)
                 {
                     backColors[index] = backColor;
-                    tileUpdated = true;
+                    updated = true;
                 }
             }
         }
@@ -333,12 +330,12 @@ namespace MithrilCog
                 if (tiles[index] != tile)
                 {
                     tiles[index] = tile;
-                    tileUpdated = true;
+                    updated = true;
                 }
                 if (colors[index] != color)
                 {
                     colors[index] = color;
-                    tileUpdated = true;
+                    updated = true;
                 }
             }
         }

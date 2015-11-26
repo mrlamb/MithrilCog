@@ -134,6 +134,18 @@ namespace MithrilCog
             }
         }
 
+        private static BlendingFactorSrc blendFactorSrc = BlendingFactorSrc.One;
+        private static BlendingFactorDest blendFactorDest = BlendingFactorDest.One;
+        public static void BlendFunc(BlendingFactorSrc blendingFactorSrc, BlendingFactorDest blendingFactorDest)
+        {
+            if (blendFactorSrc != blendingFactorSrc || blendFactorDest != blendingFactorDest)
+            {
+                blendFactorSrc = blendingFactorSrc;
+                blendFactorDest = blendingFactorDest;
+                GL.BlendFunc(blendingFactorSrc, blendingFactorDest);
+            }
+        }
+
 
     }
 }

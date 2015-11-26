@@ -16,17 +16,17 @@ namespace MithrilCog
         public int TextureId { private set; get; }
         public float uRatio { private set; get; }
         public float vRatio { private set; get; }
-        public int TileWidth { private set; get; }
-        public int TileHeight { private set; get; }
+        public Vector2 TileSize { private set; get; }
+        public float TileWidth { get { return TileSize.X; } }
+        public float TileHeight { get { return TileSize.Y; } }
         public float uTile { private set; get; }
         public float vTile { private set; get; }
         public int Stride { private set; get; }
         public Vector4 Background { private set; get; }
 
-        public TiledTexture(string filename, int tileWidth, int tileHeight)
+        public TiledTexture(string filename, float tileWidth, float tileHeight)
         {
-            TileWidth = tileWidth;
-            TileHeight = tileHeight;
+            TileSize = new Vector2(tileWidth, tileHeight);
             Filename = filename;
 
             TextureId = GL.GenTexture();
@@ -39,7 +39,7 @@ namespace MithrilCog
                 ImageLockMode.ReadOnly,
                 System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-            Stride = bmp.Width / tileWidth;
+            Stride = bmp.Width / (int)tileWidth;
             uRatio = 1f / (float)bmp.Width;
             vRatio = 1f / (float)bmp.Height;
             uTile = uRatio * (float)TileWidth;
@@ -56,11 +56,11 @@ namespace MithrilCog
 
             Background = new Vector4(rgbValues[0]/255f, rgbValues[1]/255f, rgbValues[2]/255f, rgbValues[3]/255f);
 
-            //for (int i = 0; i < rgbValues.Length; i += 4)
-            //{
-            //    if (rgbValues[i] == r && rgbValues[i + 1] == b && rgbValues[i + 2] == g)
-            //        rgbValues[i + 3] = 0;
-            //}
+            for (int i = 0; i < rgbValues.Length; i += 4)
+            {
+                if (rgbValues[i] == r && rgbValues[i + 1] == b && rgbValues[i + 2] == g)
+                    rgbValues[i + 3] = 0;
+            }
 
             System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, bytes);
 

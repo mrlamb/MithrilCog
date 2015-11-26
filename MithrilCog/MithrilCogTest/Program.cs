@@ -13,6 +13,8 @@ namespace MithrilCogTest
     {
         private static CogWindow window;
         private static TileGrid grid;
+        private static SpriteBatch spriteBatch;
+        private static Sprite sprite;
         private static int x;
         private static int y;
 
@@ -22,8 +24,20 @@ namespace MithrilCogTest
 
             window.UpdateFrame += Window_UpdateFrame;
 
-            grid = new TileGrid(new TiledTexture("ascii_8x8.png", 8, 8), 0, 0, 100, 75, 1f, 1f, false);
+            grid = new TileGrid(new TiledTexture("ascii_8x8.png", 8, 8), 0, 0, 0, 100, 75, 1f, 1f, false);
+            spriteBatch = new SpriteBatch(new TiledTexture("ascii_8x8.png", 8, 8), 0, 0, 1, 1f, 1f);
+            sprite = new Sprite();
+            sprite.tile = 2;
+            sprite.position = new OpenTK.Vector2(32f, 32f);
+            sprite.rotation = 1f;
+            sprite.color = new OpenTK.Vector4(1f, 1f, 1f, .5f);
+            sprite.scale = new OpenTK.Vector2(1f, 1f);
+            sprite.size = new OpenTK.Vector2(1f, 1f);
+
+            spriteBatch.Sprites.Add(sprite);
+
             window.DrawElements.Add(grid);
+            window.DrawElements.Add(spriteBatch);
 
             grid.ClearTiles(0, new OpenTK.Vector4(1f, 1f, 1f, 1f));
 
@@ -48,8 +62,8 @@ namespace MithrilCogTest
             }
 
             grid.ClearTiles(0, new OpenTK.Vector4(1f, 1f, 1f, 1f));
-            grid.SetTile(x, y, 2);
-
+            sprite.position.X = x;
+            sprite.position.Y = y;
         }
     }
 }
